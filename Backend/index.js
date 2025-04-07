@@ -1,6 +1,6 @@
 import express from 'express'; // for creating a server .
 import 'dotenv/config' // for imporing the data from .env file
-import { connectDB } from './connection/db';
+import { connectDB } from './connection/db.js';
 
 const PORT = process.env.PORT;
 
