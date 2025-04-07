@@ -8,6 +8,8 @@ const app = express();
 
 app.use(express.json()); // data will be in json() format
 
+app.use("/api/auth",authRoutes)
+// app.use("/api/admin", adminRoutes)
 
 
 connectDB() // mongoDB connected with express server
