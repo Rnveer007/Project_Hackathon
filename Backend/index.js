@@ -5,6 +5,7 @@ import 'dotenv/config' // for imporing the data from .env file
 import { connectDB } from './connection/db.js';
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import userRoutes from "./routes/userAuthRoutes.js"
 
 
 const PORT = process.env.PORT;
@@ -26,6 +27,7 @@ app.use(cookieParser())
 
 app.use("/api/auth", authRoutes)
 app.use("/api/admin", adminRoutes)
+app.use("/api/user", userRoutes)
 
 
 connectDB() // mongoDB connected with express server
