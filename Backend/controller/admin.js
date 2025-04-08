@@ -1,78 +1,53 @@
-import bcrypt from "bcrypt"; // using for password hashing.
-import "dotenv/config";
-import jwt from "jsonwebtoken"; // to create token  for authantication.
-import Admin from "../models/adminLoginModel.js";
+import fs from 'fs'
+import Test from "../models/adminTestModel.js"
 
-// always take two arguments. 
-export async function loginAdmin(req, res) {
+export async function createTest(req, res) {
     try {
-        const { email, password } = req.body;
+        const { name } = req.body; // name of the test.
+        const file = req.file; // get the uploaded file handled by multer.
 
-        const admin = await Admin.findOne({ email })
-        if (!admin) {
-            return res.status(401).json({ message: "Invailid Credentials" })
+        // check if a file uploaded
+        if (!file) {
+            return res.status(400).json({ error: "No File Found" })
         }
 
-        const isPasswordValid = await bcrypt.compare(password, admin.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invailid Credentials" })
+        // check if file type 
+        if (file.mimetype !== 'application/json') {
+            return res.status(400).json({ error: "Only JSON files are allowed" });
         }
 
-        const adminToken = jwt.sign(
-            {
-                id: admin._id,
-                email: admin.email,
-                // role: "admin"
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        )
+        // Read and parse the file content
+        const fileContent = await fsPromises.readFile(file.path, 'utf-8');
 
-        res.cookie("adminToken", adminToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: 'none',
-            // maxAge:36000000,
-        })
+        let parsedData;
 
-        res.status(200).json({
-            message: "Admin logged in Successfully",
-            token: adminToken,
-            admin: {
-                id: admin._id,
-                email: admin.email,
-            },
-        })
+        try {
+            parsedData = JSON.parse(fileContent)
 
-    } catch (error) {
-        console.log("Login Error", error)
-        res.status(500).json({ message: "Seerver Error", error: error.message })
-    }
+        } catch (error) {
+            return res.status(400).json({ error: "Invailid JSON Format" })
+        };
 
-}
+        if (!parsedData.questions ||
+            !Array.isArray(parsedData.questions) ||
+            parsedData.questions.length === 0) {
+            return res.status(404).json({ error: "The JSON file must Contain at least one question" })
+        }
 
-
-export async function registerAdmin(req, res) {
-    try {
-        const { name, email, password } = req.body
-
-        const existingUser = await Admin.findOne({ email })
-        if (existingUser) return res.status(400).json({ message: 'User Already Exist' })
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-
-        const newAdmin = new Admin({
+        const test = new Test({
             name,
-            email,
-            password: hashedPassword
-        });
+            file: {
+                questions: parsedData.questions
+            }
+        })
 
-        await newAdmin.save()
-        res.status(201).json({ message: 'Admin Registered Successfully' })
-    }
-    catch (error) {
+        await test.save();
+
+        // clean up the temporary file
+        await fsPromises.unlink(file.path);
+        
+    } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Error in Registering' })
-
+        return res.status(500).json({ error: "Server Error" });
     }
 }

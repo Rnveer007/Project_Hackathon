@@ -1,7 +1,8 @@
 import express from 'express'; // for creating a server .
 import 'dotenv/config' // for imporing the data from .env file
 import { connectDB } from './connection/db.js';
-import authRoutes from './routes/authroutes.js'
+import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 const PORT = process.env.PORT;
 
@@ -10,7 +11,7 @@ const app = express();
 app.use(express.json()); // data will be in json() format
 
 app.use("/api/auth", authRoutes)
-// app.use("/api/admin", adminRoutes)
+app.use("/api/admin", adminRoutes)
 
 
 connectDB() // mongoDB connected with express server

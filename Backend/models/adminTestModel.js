@@ -46,4 +46,5 @@ const testSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-export default mongoose.model('Test', testSchema);
+const Test =  mongoose.model('Test', testSchema);
+export default Test
