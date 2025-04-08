@@ -5,6 +5,7 @@ const AdminHome = () => {
   const [testName, setTestName] = useState("");
   const [jsonFile, setJsonFile] = useState(null);
   const [message, setMessage] = useState("");
+  const [toggle, setToggle] = useState("false")
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,6 +19,7 @@ const AdminHome = () => {
     const formData = new FormData();
     formData.append("name", testName);
     formData.append("file", jsonFile);
+    formData.append("toggle", toggle)
 
     try {
       const response = await axios.post("http://localhost:8080/api/admin/create-test", formData, {

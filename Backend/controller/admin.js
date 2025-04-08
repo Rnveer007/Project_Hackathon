@@ -1,5 +1,6 @@
 import { promises as fsPromises } from 'fs';
 import Test from "../models/adminTestModel.js"
+import { error } from 'console';
 
 export async function createTest(req, res) {
     try {
@@ -31,8 +32,8 @@ export async function createTest(req, res) {
         if (!parsedData.questions ||
             !Array.isArray(parsedData.questions) ||
             parsedData.questions.length === 0) {
-                return res.status(400).json({ error: "The JSON file must contain at least one question" })
-            }
+            return res.status(400).json({ error: "The JSON file must contain at least one question" })
+        }
 
         const validatedQuestions = parsedData.questions.map((item, index) => {
             if (
@@ -70,4 +71,84 @@ export async function createTest(req, res) {
 }
 
 
+export async function viewTest(req, res) {
+    try {
+        let quary = {};
+
+        const test = await Test.find(quary);
+        if (!test || test.length === 0) {
+            return res.status(404).json
+                ({
+                    message: "No Test Available"
+                })
+        }
+
+    } catch (error) {
+        return res(500).json({ error: error.message })
+    }
+}
+
+export async function deleteTest(req, res) {
+    try {
+        if (!req.params.id) {
+            return res.status(400).send({ error: "Test ID is required" })
+        }
+        const deleteTest = await Test.findByIdAndDelete(req.params.id);
+
+        if (!deleteTest) {
+            return res.status(404).send({ error: "Test not Found" })
+        }
+        return res.status(200).send({
+            message: "Test Deleted Successfully",
+            Test: deleteTest
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: "server error" })
+    }
+
+}
+
+export async function updateTest(req, res) {
+    try {
+        const testId = req.params.id;
+        const updatedQuestions = req.file
+
+        const updatedTest = await Test.findOneAndUpdate(
+            testId,
+            { $set: { file: updatedQuestions } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedTest) {
+            return res.status(404).json({ message: "Resource Not Found" })
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "An error occured"
+        })
+    }
+}
+
+export async function issueTest(req, res) {
+    try {
+        const testId = req.params.id;
+        const issueTest = req.body
+
+        const issuedTest = await Test.findByIdAndUpdate(
+            testId,
+            { $set: { toggle: issueTest } },
+            { new: true }
+        )
+        if (!issuedTest) {
+            return res.status(404).json({ message: "Resource not Found" })
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
 
