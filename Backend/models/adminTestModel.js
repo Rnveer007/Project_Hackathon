@@ -43,6 +43,9 @@ const testSchema = new mongoose.Schema({
     file: {
         type: fileSchema,
         required: true
+    },
+    toggle:{
+        type : Boolean,
     }
 }, { timestamps: true });
 
