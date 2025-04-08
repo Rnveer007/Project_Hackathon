@@ -5,6 +5,7 @@ import Test from './pages/Test'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import AdminLogin from './Admin/AdminLogin'
+import AdminHome from './Admin/AdminHome'
 
 
 const router = createBrowserRouter([
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "/adminlogin",
         element: <AdminLogin />
+      },
+      {
+        path: "/adminhome",
+        element: <AdminHome />
       },
     ]
   }
