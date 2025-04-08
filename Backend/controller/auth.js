@@ -131,8 +131,6 @@ export async function loginUser(req, res) {
 }
 
 
-
-
 export async function registerUser(req, res) {
     try {
         const { name, email, password } = req.body
