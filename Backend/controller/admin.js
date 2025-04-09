@@ -1,6 +1,5 @@
 import { promises as fsPromises } from 'fs';
 import Test from "../models/adminTestModel.js"
-import { error } from 'console';
 
 export async function createTest(req, res) {
     try {
@@ -69,7 +68,6 @@ export async function createTest(req, res) {
         return res.status(500).json({ error: "Server Error" });
     }
 }
-
 
 export async function viewTest(req, res) {
     try {
