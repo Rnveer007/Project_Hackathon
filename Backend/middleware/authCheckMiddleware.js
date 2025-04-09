@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 const authCheckMiddleware = (req, res, next) => {
     try {
         // Check for token in both cookie and Authorization header
-        const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+        const token = req.cookies.token;
 
         if (!token) {
             console.log("token missing");

@@ -1,48 +1,56 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import instance from "../../../axiosConfig";
 
 export const AdminContext = createContext();
 
 const AdminAuthProvider = ({ children }) => {
-    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-    const [adminLoading, setAdminLoading] = useState(true);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminLoading, setAdminLoading] = useState(true);
+  const [adminInfo, setAdminInfo] = useState(null);
 
-    async function adminFetchStatus() {
-        try {
-            setAdminLoading(true);
-            const response = await axios.get("", {
-                withCredentials: true,
-            });
-            if (response.status === 200) {
-                setIsAdminAuthenticated(true);
-            }
-        } catch (error) {
-            console.log(error);
-            setIsAdminAuthenticated(false);
-        } finally {
-            setAdminLoading(false);
-        }
+  useEffect(() => {
+    adminFetchStatus();
+  }, []);
+
+  async function adminFetchStatus() {
+    try {
+      setAdminLoading(true);
+      const response = await instance.get("/admin/status", {
+        withCredentials: true,
+      });
+
+      if (response.status === 200 && response.data.authenticated) {
+        setIsAdminAuthenticated(true);
+        setAdminInfo(response.data.admin); // Save decoded token (id, email)
+      } else {
+        setIsAdminAuthenticated(false);
+        setAdminInfo(null);
+      }
+    } catch (error) {
+      console.log("Admin status error:", error);
+      setIsAdminAuthenticated(false);
+      setAdminInfo(null);
+    } finally {
+      setAdminLoading(false);
     }
+  }
 
-    useEffect(() => {
-        adminFetchStatus();
-    }, []);
-
-    return (
-        <AdminContext.Provider
-            value={{
-                isAdminAuthenticated,
-                adminLoading,
-                adminFetchStatus,
-            }}
-        >
-            {children}
-        </AdminContext.Provider>
-    );
+  return (
+    <AdminContext.Provider
+      value={{
+        isAdminAuthenticated,
+        adminLoading,
+        adminFetchStatus,
+        adminInfo,
+      }}
+    >
+      {children}
+    </AdminContext.Provider>
+  );
 };
 
-export function useAuth() {
-    return useContext(AdminContext);
+export function useAuthAdmin() {
+  return useContext(AdminContext);
 }
 
-export default AdminAuthProvider; 
+export default AdminAuthProvider;

@@ -1,34 +1,71 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Register() {
-    return (
-        <>
-            <form action="">
-                <input type="text"
-                    placeholder='Enter Your Name'
-                    className='border-2 mx-3 pl-3 my-5'
-                />
-                <input type="email"
-                    placeholder='Enter Your Email'
-                    className='border-2 mx-3 pl-3 my-5'
-                />
-                <input type="password"
-                    placeholder='Enter Your Password'
-                    className='border-2 mx-3 pl-3 my-5'
-                />
-                <button className='cursor-pointer'>Submit</button>
-            </form>
-            <div>
-                <h1>Already Registered?
-                    <span className='cursor-pointer'>
-                        <Link to={"/login"}>Login Here</Link>
-                    </span>
-                </h1>
-            </div>
-        </>
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    )
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!name || !email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "",
+        { name, email, password },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
+  }
+  return (
+    <>
+      <form action="" onSubmit={handleSubmit}>
+        <input
+          name="name"
+          type="text"
+          placeholder="Enter your first name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border-2 mx-3 pl-3 my-5"
+        />
+
+        <input
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border-2 mx-3 pl-3 my-5"
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border-2 mx-3 pl-3 my-5"
+        />
+        <button type="submit" className="cursor-pointer">
+          Submit
+        </button>
+      </form>
+      <div>
+        <h1>
+          Already Registered?
+          <span className="cursor-pointer">
+            <Link to={"/login"}>Login Here</Link>
+          </span>
+        </h1>
+      </div>
+    </>
+  );
 }
 
-export default Register
+export default Register;

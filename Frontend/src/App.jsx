@@ -6,6 +6,10 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import AdminLogin from './Admin/AdminLogin'
 import AdminHome from './Admin/AdminHome'
+import UserProtectedRoute from './pages/UserProtectedRoute'
+import AdminProtectedRoute from './Admin/AdminProtectedRoute'
+import AdminAuthProvider from './Admin/context/AdminAuthProvider'
+import UserAuthProvider from './pages/context/UserAuthProvider'
 
 
 const router = createBrowserRouter([
@@ -15,7 +19,10 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element:
+          <UserProtectedRoute>
+            <Home />
+          </UserProtectedRoute>
       },
       {
         path: "/test",
@@ -35,7 +42,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/adminhome",
-        element: <AdminHome />
+        element:
+          <AdminProtectedRoute>
+            <AdminHome />
+          </AdminProtectedRoute>
       },
     ]
   }
@@ -43,7 +53,14 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <>
+      <AdminAuthProvider>
+        <UserAuthProvider>
+          <RouterProvider router={router} />
+        </UserAuthProvider>
+      </AdminAuthProvider>
+    </>
+
   )
 }
 

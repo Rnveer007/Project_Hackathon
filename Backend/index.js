@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser"
 import express from 'express'; // for creating a server .
 import 'dotenv/config' // for imporing the data from .env file
 import { connectDB } from './connection/db.js';
-import authRoutes from "./routes/authRoutes.js";
+import authRoutes from "./routes/adminAuthRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userAuthRoutes.js"
 
