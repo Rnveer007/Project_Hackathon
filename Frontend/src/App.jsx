@@ -4,13 +4,14 @@ import Home from './pages/Home'
 import Test from './pages/Test'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import AdminLogin from './Admin/AdminLogin'
-import AdminHome from './Admin/AdminHome'
 import UserProtectedRoute from './pages/UserProtectedRoute'
-import AdminProtectedRoute from './Admin/AdminProtectedRoute'
-import AdminAuthProvider from './Admin/context/AdminAuthProvider'
 import UserAuthProvider from './pages/context/UserAuthProvider'
-
+import AdminLogin from './admin/pages/AdminLogin'
+import AdminHome from './admin/pages/AdminHome'
+import AdminProtectedRoute from './admin/pages/ProtectedRoute'
+import AdminAuth from './admin/context/Auth'
+import AdminTest from './admin/pages/CreateNewTest'
+import Admin from '../../Backend/models/adminLoginModel'
 
 const router = createBrowserRouter([
   {
@@ -25,8 +26,11 @@ const router = createBrowserRouter([
           </UserProtectedRoute>
       },
       {
-        path: "/test",
-        element: <Test />
+        path: "/admin/test",
+        element: 
+        <AdminProtectedRoute>
+        <AdminTest />
+        </AdminProtectedRoute>
       },
       {
         path: "/login",
@@ -41,11 +45,16 @@ const router = createBrowserRouter([
         element: <AdminLogin />
       },
       {
+        path:"/adminregister",
+        element:<Register/>
+      },
+
+      {
         path: "/adminhome",
         element:
           <AdminProtectedRoute>
             <AdminHome />
-          </AdminProtectedRoute>
+        //  </AdminProtectedRoute>
       },
     ]
   }
@@ -54,11 +63,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <AdminAuthProvider>
+      <AdminAuth>
         <UserAuthProvider>
           <RouterProvider router={router} />
         </UserAuthProvider>
-      </AdminAuthProvider>
+      </AdminAuth>
     </>
 
   )

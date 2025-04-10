@@ -7,10 +7,14 @@ export const UserContext = createContext();
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
     const [userLoading, setUserLoading] = useState(true);
 
+    useEffect(()=>{
+        userFetchStatus();
+    }, [])
+
     async function userFetchStatus() {
         try {
             setUserLoading(true);
-            const response = await instance.get("", {
+            const response = await instance.get("/", {
                 withCredentials: true,
             });
             if (response.status === 200) {
@@ -24,9 +28,6 @@ export const UserContext = createContext();
         }
     }
 
-    useEffect(() => {
-        userFetchStatus();
-    }, []);
 
     return (
         <UserContext.Provider

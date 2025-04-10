@@ -25,7 +25,7 @@ export async function loginAdmin(req, res) {
             {
                 id: admin._id,
                 email: admin.email,
-                // role: "admin"
+                role: "admin"
             },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
@@ -34,9 +34,10 @@ export async function loginAdmin(req, res) {
         res.cookie("adminToken", adminToken, {
             httpOnly: true,
             secure: false,
-            sameSite: 'none',
+            sameSite: 'strict',
             // maxAge:36000000,
         })
+// console.log(adminToken);
 
         res.status(200).json({
             message: "Admin logged in Successfully",
@@ -154,4 +155,17 @@ export async function registerUser(req, res) {
         res.status(500).json({ message: 'Error in Registering' })
 
     }
+}
+export const checkToken = async (req, res)=>
+    {
+    const token = req.cookies.adminToken;
+    if (!token) {
+        return res.status(401).json({message: "No token found"});
+    }
+    try {
+       jwt.verify(token, process.env.JWT_SECRET);
+        return res.status(200).json({message: "User Authenticated"});
+      } catch (error) {
+        return res.status(401).json({message: "Invalid Token"});
+      }
 }
