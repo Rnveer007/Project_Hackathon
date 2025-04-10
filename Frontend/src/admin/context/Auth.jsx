@@ -24,9 +24,25 @@ function AdminAuth({ children }) {
     checkAuthentication();
   }, []);
 
+  async function AadminlogoutHandle() {
+    try {
+      await instance.post(
+        "/admin/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      setIsAdminLoggedIn(false);
+      checkAuthAdmin();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <AuthContext.Provider
-      value={{ loading, isAuthenticated, setIsAuthenticated }}
+      value={{ loading, isAuthenticated, setIsAuthenticated, AadminlogoutHandle }}
     >
       {children}
     </AuthContext.Provider>

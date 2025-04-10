@@ -37,7 +37,7 @@ export async function loginAdmin(req, res) {
             sameSite: 'strict',
             // maxAge:36000000,
         })
-// console.log(adminToken);
+        // console.log(adminToken);
 
         res.status(200).json({
             message: "Admin logged in Successfully",
@@ -55,32 +55,44 @@ export async function loginAdmin(req, res) {
 
 }
 
-
-export async function registerAdmin(req, res) {
+export async function logoutAdmin(req, res) {
     try {
-        const { name, email, password } = req.body
-
-        const existingAdmin = await Admin.findOne({ email })
-        if (existingAdmin) return res.status(400).json({ message: 'User Already Exist' })
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-
-        const newAdmin = new Admin({
-            name,
-            email,
-            password: hashedPassword
-        });
-
-        await newAdmin.save()
-        res.status(201).json({ message: 'Admin Registered Successfully' })
-    }
-    catch (error) {
+        res.clearCookie("adminToken", {
+            httpOnly: false,
+            secure: false,
+            sameSite: "strict",
+        })
+        res.status(200).send({ message: "Logged out" });
+    } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Error in Registering' })
-
+        return res.status(500).send({ mesage: error.message })
     }
 }
 
+// export async function registerAdmin(req, res) {
+//     try {
+//         const { name, email, password } = req.body
+
+//         const existingAdmin = await Admin.findOne({ email })
+//         if (existingAdmin) return res.status(400).json({ message: 'User Already Exist' })
+
+//         const hashedPassword = await bcrypt.hash(password, 10)
+
+//         const newAdmin = new Admin({
+//             name,
+//             email,
+//             password: hashedPassword
+//         });
+
+//         await newAdmin.save()
+//         res.status(201).json({ message: 'Admin Registered Successfully' })
+//     }
+//     catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: 'Error in Registering' })
+
+//     }
+// }
 
 export async function loginUser(req, res) {
     try {
@@ -131,7 +143,6 @@ export async function loginUser(req, res) {
 
 }
 
-
 export async function registerUser(req, res) {
     try {
         const { name, email, password } = req.body
@@ -156,16 +167,15 @@ export async function registerUser(req, res) {
 
     }
 }
-export const checkToken = async (req, res)=>
-    {
+export const checkToken = async (req, res) => {
     const token = req.cookies.adminToken;
     if (!token) {
-        return res.status(401).json({message: "No token found"});
+        return res.status(401).json({ message: "No token found" });
     }
     try {
-       jwt.verify(token, process.env.JWT_SECRET);
-        return res.status(200).json({message: "User Authenticated"});
-      } catch (error) {
-        return res.status(401).json({message: "Invalid Token"});
-      }
+        jwt.verify(token, process.env.JWT_SECRET);
+        return res.status(200).json({ message: "User Authenticated" });
+    } catch (error) {
+        return res.status(401).json({ message: "Invalid Token" });
+    }
 }

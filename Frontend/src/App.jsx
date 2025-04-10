@@ -1,17 +1,15 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import First from './First'
-import Home from './pages/Home'
-import Test from './pages/Test'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import UserProtectedRoute from './pages/UserProtectedRoute'
-import UserAuthProvider from './pages/context/UserAuthProvider'
+import UserProtectedRoute from './user/pages/UserProtectedRoute'
 import AdminLogin from './admin/pages/AdminLogin'
 import AdminHome from './admin/pages/AdminHome'
 import AdminProtectedRoute from './admin/pages/ProtectedRoute'
 import AdminAuth from './admin/context/Auth'
 import AdminTest from './admin/pages/CreateNewTest'
-import Admin from '../../Backend/models/adminLoginModel'
+import Login from './user/pages/Login'
+import UserAuthProvider from "./user/context/UserAuthProvider"
+import Home from './user/pages/Home'
+import Register from './user/pages/Register'
 
 const router = createBrowserRouter([
   {
@@ -27,10 +25,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin/test",
-        element: 
-        <AdminProtectedRoute>
-        <AdminTest />
-        </AdminProtectedRoute>
+        element:
+          <AdminProtectedRoute>
+            <AdminTest />
+          </AdminProtectedRoute>
       },
       {
         path: "/login",
@@ -45,8 +43,8 @@ const router = createBrowserRouter([
         element: <AdminLogin />
       },
       {
-        path:"/adminregister",
-        element:<Register/>
+        path: "/adminregister",
+        element: <Register />
       },
 
       {
