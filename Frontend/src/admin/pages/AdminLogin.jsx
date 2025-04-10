@@ -21,7 +21,7 @@ function AdminLogin() {
     try {
       await instance.post("/auth/login", form, { withCredentials: true });
       setIsAuthenticated(true);
-      navigate("/adminhome");
+      navigate("/admin/home");
     } catch (error) {
       console.log("Login error:", error);
     }

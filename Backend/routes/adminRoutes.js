@@ -17,7 +17,7 @@ const upload = multer({ dest: "uploads/" });
 const router = express.Router();
 
 router.post("/create-test", checkToken, upload.single("file"), createTest);
-router.get("/view-test", authCheckMiddleware, viewTest);
+router.get("/view-test", checkToken, viewTest);
 router.delete("/delete/:id", authCheckMiddleware, deleteTest);
 router.patch("update/:id", authCheckMiddleware, updateTest);
 router.patch("issue/:id", authCheckMiddleware, issueTest);

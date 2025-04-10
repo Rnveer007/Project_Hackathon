@@ -74,6 +74,8 @@ export async function viewTest(req, res) {
         let quary = {};
 
         const test = await Test.find(quary);
+        console.log(test);
+        res.status(200).json({test})
         if (!test || test.length === 0) {
             return res.status(404).json
                 ({

@@ -11,8 +11,10 @@ function ViewTests() {
   const fetchTests = async () => {
     console.log("fetching");
     try {
-      const response = await instance.get("/admin/tests");
+      const response = await instance.get("/admin/view-test",{withCredentials:true});
       setTests(response.data.tests);
+      // console.log(response);
+      
     } catch (error) {
       console.error("Error fetching tests:", error);
     }
