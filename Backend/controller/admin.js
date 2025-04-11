@@ -35,6 +35,7 @@ export async function createTest(req, res) {
             return res.status(400).json({ error: "The JSON file must contain at least one question" })
         }
 
+        // validate every question inside the file
         const validatedQuestions = parsedData.questions.map((item, index) => {
             if (
                 !item.question ||
