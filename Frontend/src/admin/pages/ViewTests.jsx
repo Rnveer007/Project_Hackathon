@@ -15,7 +15,7 @@ function ViewTests() {
       const response = await instance.get("/admin/view-test", { withCredentials: true });
       setTests(response.data.tests || []);
 
-      console.log("res", response);
+      // console.log("res", response);
 
     } catch (error) {
       console.error("Error fetching tests:", error);
@@ -39,22 +39,32 @@ function ViewTests() {
           test._id === id ? { ...test, status: "issued" } : test
         )
       );
+      // console.log(tests);
     } catch (error) {
       console.error("Error updating test status:", error);
     }
   };
 
-  const updateTest = async (id, updatedData) => {
-    try {
-      await instance.patch(`/admin/update/${id}`, updatedData);
+  const updateTestFile = async (e, testId) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-      setTests(
-        tests.map((test) =>
-          test._id === id ? { ...test, ...updatedData } : test
-        )
-      );
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await instance.patch(`/admin/update/${testId}`, formData, {
+        withCredentials: true,
+
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("Update Response:", response)
+
+      alert("Test updated successfully");
+      fetchTests();
     } catch (error) {
       console.error("Error updating test:", error);
+      alert("Failed to update test");
     }
   };
 
@@ -79,21 +89,17 @@ function ViewTests() {
               <td>
                 <button onClick={() => deleteTest(test._id)}>Delete</button>
                 <button onClick={() => issueTest(test._id)}>Issue</button>
-                <button
-                  onClick={() =>
-                    updateTest(test._id, {
-                      name: prompt("Enter new name:", test.name),
-                    })
-                  }
-                >
-                  Update
-                </button>
+                <input
+                  type="file"
+                  accept="application/json"
+                  onChange={(e) => updateTestFile(e, test._id)}
+                />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+    </div >
   );
 }
 

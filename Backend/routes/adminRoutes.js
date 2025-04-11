@@ -12,14 +12,16 @@ import {
 } from "../controller/admin.js";
 import { checkToken } from '../controller/auth.js';
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
 router.post("/create-test", checkToken, upload.single("file"), createTest);
 router.get("/view-test", checkToken, viewTest);
 router.delete("/delete/:id", checkToken, deleteTest);
-router.patch("/update/:id", checkToken, updateTest);
+router.patch("/update/:id", upload.single("file"), updateTest);
 router.patch("/issue/:id", checkToken, issueTest);
 
 export default router;
+
+

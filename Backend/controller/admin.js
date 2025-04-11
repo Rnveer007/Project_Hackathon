@@ -1,4 +1,4 @@
-import { promises as fsPromises } from 'fs';
+import { promises as fsPromises } from 'fs'; // to read and delete the uploaded file from disk
 import Test from "../models/adminTestModel.js"
 
 export async function createTest(req, res) {
@@ -11,23 +11,24 @@ export async function createTest(req, res) {
             return res.status(400).json({ error: "No File Found" })
         }
 
-        // check if file type 
+        // check if file type is acutally a JSON file 
         if (file.mimetype !== 'application/json') {
             return res.status(400).json({ error: "Only JSON files are allowed" });
         }
 
-        // Read and parse the file content
+        // Read and parse the file from disk
         const fileContent = await fsPromises.readFile(file.path, 'utf-8');
 
         let parsedData;
 
         try {
-            parsedData = JSON.parse(fileContent)
+            parsedData = JSON.parse(fileContent) // conver JSON string into object
 
         } catch (error) {
             return res.status(400).json({ error: "Invailid JSON Format" })
         };
 
+        //Ensure file has a valid questions array
         if (!parsedData.questions ||
             !Array.isArray(parsedData.questions) ||
             parsedData.questions.length === 0) {
@@ -71,17 +72,17 @@ export async function createTest(req, res) {
 
 export async function viewTest(req, res) {
     try {
-      const tests = await Test.find();
-  
-      if (!tests || tests.length === 0) {
-        return res.status(404).json({ message: "No Test Available" });
-      }
-  
-      return res.status(200).json({ tests }); // ✅ Send test data
+        const tests = await Test.find();
+
+        if (!tests || tests.length === 0) {
+            return res.status(404).json({ message: "No Test Available" });
+        }
+
+        return res.status(200).json({ tests }); // ✅ Send test data
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
-  }
+}
 
 export async function deleteTest(req, res) {
     try {
@@ -106,24 +107,37 @@ export async function deleteTest(req, res) {
 
 export async function updateTest(req, res) {
     try {
-        const testId = req.params.id;
-        const updatedQuestions = req.file
+        console.log("🔁 Hitting updateTest route...");
 
-        const updatedTest = await Test.findOneAndUpdate(
+        const testId = req.params.id;
+        console.log(testId)
+        const file = req.file;
+
+        if (!file) {
+            return res.status(400).json({ message: "No file uploaded." });
+        }
+
+        const content = file.buffer.toString(); // read file as string
+        const parsed = JSON.parse(content); // parse the JSON
+
+        if (!parsed.questions || !Array.isArray(parsed.questions)) {
+            return res.status(400).json({ message: "Invalid file format: 'questions' array missing." });
+        }
+
+        const updatedTest = await Test.findByIdAndUpdate(
             testId,
-            { $set: { file: updatedQuestions } },
-            { new: true, runValidators: true }
+            { questions: parsed.questions },
+            { new: true }
         );
 
         if (!updatedTest) {
-            return res.status(404).json({ message: "Resource Not Found" })
+            return res.status(404).json({ message: "Test not found" });
         }
 
+        res.status(200).json({ message: "Test updated successfully", test: updatedTest });
     } catch (error) {
-        console.log(error)
-        res.status(500).send({
-            message: "An error occured"
-        })
+        console.error("Update Test Error:", error.message);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 }
 

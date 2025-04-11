@@ -1,0 +1,25 @@
+{
+  "testName": "Sample Test",
+  "questions": [
+    {
+      "question": "What is the largest mammal on Earth?",
+      "options": ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+      "correct_answer": "Blue Whale"
+    },
+    {
+      "question": "Which language is primarily spoken in Brazil?",
+      "options": ["Spanish", "Portuguese", "French", "English"],
+      "correct_answer": "Portuguese"
+    },
+    {
+      "question": "How many continents are there on Earth?",
+      "options": ["5", "6", "7", "8"],
+      "correct_answer": "7"
+    },
+    {
+      "question": "What gas do plants absorb from the atmosphere?",
+      "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+      "correct_answer": "Carbon Dioxide"
+    }
+  ]
+}

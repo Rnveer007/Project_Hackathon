@@ -16,7 +16,7 @@ function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await instances.post("/admin/register", form);
+      const response = await instance.post("/admin/register", form);
       console.log(response);
     } catch (error) {
       console.log(error);
