@@ -20,7 +20,6 @@ app.use(express.json()); // data will be in json() format (this middleware allow
 // They’re like commands sent from the frontend (browser or client) to the backend (your Express server).
 
 
-
 // CORS Configuration (for frontend-backend comunication)
 const corsOptions = {
     origin: process.env.FRONTEND_URI,
