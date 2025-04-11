@@ -71,22 +71,17 @@ export async function createTest(req, res) {
 
 export async function viewTest(req, res) {
     try {
-        let quary = {};
-
-        const test = await Test.find(quary);
-        console.log(test);
-        res.status(200).json({test})
-        if (!test || test.length === 0) {
-            return res.status(404).json
-                ({
-                    message: "No Test Available"
-                })
-        }
-
+      const tests = await Test.find();
+  
+      if (!tests || tests.length === 0) {
+        return res.status(404).json({ message: "No Test Available" });
+      }
+  
+      return res.status(200).json({ tests }); // ✅ Send test data
     } catch (error) {
-        return res(500).json({ error: error.message })
+      return res.status(500).json({ error: error.message });
     }
-}
+  }
 
 export async function deleteTest(req, res) {
     try {

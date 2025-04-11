@@ -1,15 +1,13 @@
-import { useEffect } from "react";
 import { useAdminAuth } from "../context/Auth";
 import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
-  const { isAuthenticated, AdminLogoutHandle } = useAdminAuth();
-  const navigate =useNavigate()
+  const { isAuthenticated, adminLogoutHandle } = useAdminAuth();
+  const navigate = useNavigate()
 
-  function handleLogout(){
-    AdminLogoutHandle();
-navigate("/admin/login")
-
+  function handleLogout() {
+    adminLogoutHandle();
+    navigate("/admin/login")
   }
 
 
@@ -17,7 +15,7 @@ navigate("/admin/login")
     <header>
       <h1>Test System Admin Dashboard</h1>
       {isAuthenticated ? (
-        <button onClick={()=>handleLogout()}>Logout</button>
+        <button onClick={() => handleLogout()}>Logout</button>
       ) : (
         <li>
           <Link to="/admin/login">Login</Link>

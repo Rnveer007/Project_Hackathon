@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from "multer"
 
-import authCheckMiddleware from "../middleware/authCheckMiddleware.js"
+// import authCheckMiddleware from "../middleware/authCheckMiddleware.js"
 
 import {
     createTest,
@@ -18,8 +18,8 @@ const router = express.Router();
 
 router.post("/create-test", checkToken, upload.single("file"), createTest);
 router.get("/view-test", checkToken, viewTest);
-router.delete("/delete/:id", authCheckMiddleware, deleteTest);
-router.patch("update/:id", authCheckMiddleware, updateTest);
-router.patch("issue/:id", authCheckMiddleware, issueTest);
+router.delete("/delete/:id", checkToken, deleteTest);
+router.patch("/update/:id", checkToken, updateTest);
+router.patch("/issue/:id", checkToken, issueTest);
 
 export default router;

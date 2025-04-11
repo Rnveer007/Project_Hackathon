@@ -24,7 +24,7 @@ function AdminAuth({ children }) {
     checkAuthentication();
   }, []);
 
-  async function AdminLogoutHandle() {
+  async function adminLogoutHandle() {
     try {
       await instance.post(
         "auth/logout",
@@ -42,7 +42,7 @@ function AdminAuth({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ loading, isAuthenticated, setIsAuthenticated, AdminLogoutHandle }}
+      value={{ loading, isAuthenticated, setIsAuthenticated, adminLogoutHandle }}
     >
       {children}
     </AuthContext.Provider>

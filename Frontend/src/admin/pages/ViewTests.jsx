@@ -3,18 +3,20 @@ import instance from "../../../axiosConfig";
 
 function ViewTests() {
   const [tests, setTests] = useState([]);
+  // console.log("test", tests)
 
   useEffect(() => {
     fetchTests();
   }, []);
 
   const fetchTests = async () => {
-    console.log("fetching");
+    // console.log("fetching");
     try {
-      const response = await instance.get("/admin/view-test",{withCredentials:true});
-      setTests(response.data.tests);
-      // console.log(response);
-      
+      const response = await instance.get("/admin/view-test", { withCredentials: true });
+      setTests(response.data.tests || []);
+
+      console.log("res", response);
+
     } catch (error) {
       console.error("Error fetching tests:", error);
     }
@@ -22,8 +24,8 @@ function ViewTests() {
 
   const deleteTest = async (id) => {
     try {
-      await instance.delete(`/admin/tests/${id}`);
-      setTests(tests.filter((test) => test.id !== id));
+      await instance.delete(`/admin/delete/${id}`, { withCredentials: true });
+      setTests(tests.filter((test) => test._id !== id));
     } catch (error) {
       console.error("Error deleting test:", error);
     }
@@ -31,10 +33,10 @@ function ViewTests() {
 
   const issueTest = async (id) => {
     try {
-      await instance.put(`/admin/tests/issueTest/${id}`, { status: "issued" });
+      await instance.patch(`/admin/issue/${id}`, { status: "issued" });
       setTests(
         tests.map((test) =>
-          test.id === id ? { ...test, status: "issued" } : test
+          test._id === id ? { ...test, status: "issued" } : test
         )
       );
     } catch (error) {
@@ -44,10 +46,11 @@ function ViewTests() {
 
   const updateTest = async (id, updatedData) => {
     try {
-      await instance.put(`/admin/tests/${id}`, updatedData);
+      await instance.patch(`/admin/update/${id}`, updatedData);
+
       setTests(
         tests.map((test) =>
-          test.id === id ? { ...test, ...updatedData } : test
+          test._id === id ? { ...test, ...updatedData } : test
         )
       );
     } catch (error) {

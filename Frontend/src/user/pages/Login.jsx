@@ -1,20 +1,27 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import instance from "../../../axiosConfig";
+import { useAuthUser } from "../context/UserAuthProvider";
 
 function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { setIsUserAuthenticated } = useAuthUser();
+
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
-      const response = await instance.post(
-        "",
+      await instance.post(
+        "/user/login",
         { email, password },
         { withCredentials: true }
       );
+      setIsUserAuthenticated(true);
+      navigate("/");
     } catch (error) {
       console.error("Error during registration:", error);
     }

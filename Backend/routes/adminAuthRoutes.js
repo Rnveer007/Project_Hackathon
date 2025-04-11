@@ -8,4 +8,5 @@ router.post("/logout", logoutAdmin);
 // router.post("/register", registerAdmin);
 router.get("/check", checkToken)
 
+
 export default router;

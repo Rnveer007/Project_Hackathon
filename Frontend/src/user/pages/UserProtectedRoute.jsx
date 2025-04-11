@@ -1,15 +1,9 @@
-import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import Login from "../pages/Login";
 import { useAuthUser } from "../context/UserAuthProvider";
 
 
 function UserProtectedRoute({ children }) {
-  const { isUserAuthenticated, userFetchStatus, userloading } = useAuthUser();
-
-  useEffect(() => {
-    userFetchStatus();
-  }, []);
+  const { isUserAuthenticated, userloading } = useAuthUser();
 
   // console.log(isAuthenticated);
 

@@ -6,7 +6,7 @@ const authCheckMiddleware = (req, res, next) => {
     try {
         // Check for token in both cookie and Authorization header
 
-        const token = req.cookies.token ;
+        const token = req.cookies.token  ;
         console.log(req)
 
         if (!token) {

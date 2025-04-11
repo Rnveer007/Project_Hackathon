@@ -3,22 +3,27 @@ import instance from "../../../axiosConfig";
 
 export const UserContext = createContext();
 
- export const UserAuthProvider = ({ children }) => {
+export const UserAuthProvider = ({ children }) => {
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
     const [userLoading, setUserLoading] = useState(true);
 
-    useEffect(()=>{
+    useEffect(() => {
         userFetchStatus();
     }, [])
 
     async function userFetchStatus() {
         try {
             setUserLoading(true);
-            const response = await instance.get("/", {
+            const response = await instance.get("/user/checkToken", {
                 withCredentials: true,
             });
-            if (response.status === 200) {
+            console.log("user", response);
+
+            if (response.data?.authenticated) {
                 setIsUserAuthenticated(true);
+            }
+            else {
+                setIsUserAuthenticated(false);
             }
         } catch (error) {
             console.log(error);
@@ -29,12 +34,32 @@ export const UserContext = createContext();
     }
 
 
+    async function userLogoutHandle() {
+        try {
+            await instance.post(
+                "user/logout",
+                {},
+                {
+                    withCredentials: true,
+                }
+            );
+            setIsUserAuthenticated(false);
+            userFetchStatus();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+
     return (
         <UserContext.Provider
             value={{
                 isUserAuthenticated,
                 userLoading,
+                setIsUserAuthenticated,
                 userFetchStatus,
+                userLogoutHandle,
             }}
         >
             {children}

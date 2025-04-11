@@ -3,6 +3,7 @@ import "dotenv/config";
 import jwt from "jsonwebtoken"; // to create token  for authantication.
 import Admin from "../models/adminLoginModel.js";
 import User from "../models/userLoginModel.js"
+import Test from "../models/adminTestModel.js";
 
 // always take two arguments. 
 export async function loginAdmin(req, res) {
@@ -97,6 +98,7 @@ export async function logoutAdmin(req, res) {
 export async function loginUser(req, res) {
     try {
         const { email, password } = req.body;
+        // console.log(email, password)
 
         const user = await User.findOne({ email })
 
@@ -122,8 +124,9 @@ export async function loginUser(req, res) {
         res.cookie("userToken", userToken, {
             httpOnly: true,
             secure: false,
-            sameSite: 'none',
-            // maxAge:36000000,
+            sameSite: 'strict',
+            path: "/",
+            maxAge: 3600000,
         })
 
 
@@ -143,6 +146,20 @@ export async function loginUser(req, res) {
 
 }
 
+export async function logoutUser(req, res) {
+    try {
+        res.clearCookie("userToken", {
+            httpOnly: false,
+            secure: false,
+            sameSite: "strict",
+            path: "/",
+        })
+        res.status(200).send({ message: "Logged out" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ mesage: error.message })
+    }
+}
 export async function registerUser(req, res) {
     try {
         const { name, email, password } = req.body
@@ -167,15 +184,40 @@ export async function registerUser(req, res) {
 
     }
 }
-export const checkToken = async (req, res) => {
+
+export const checkToken = async (req, res, next) => {
     const token = req.cookies.adminToken;
+
+    if (!token) {
+        // console.log("No token received");
+        return res.status(401).json({ message: "No token found" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.admin = decoded;
+        next();
+    } catch (error) {
+        console.log("Token verification error:", error.message);
+        return res.status(401).json({ message: "Invalid Token" });
+    }
+};
+
+
+export const checkUserToken = (req, res, next) => {
+    const token = req.cookies.userToken;
+
     if (!token) {
         return res.status(401).json({ message: "No token found" });
     }
+
     try {
-        jwt.verify(token, process.env.JWT_SECRET);
-        return res.status(200).json({ message: "User Authenticated" });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(" token received");
+        req.user = decoded;
+        res.status(200).json({ authenticated: true });
     } catch (error) {
+        console.log("Token verification error:", error.message);
         return res.status(401).json({ message: "Invalid Token" });
     }
-}
+};
